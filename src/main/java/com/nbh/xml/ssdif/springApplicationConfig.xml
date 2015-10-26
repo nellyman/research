@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd">
+<!--
+	- Application context definition for business layer.
+-->
+<beans>
+
+	<!-- ========================= RESOURCE DEFINITIONS ========================= -->
+    <bean id="emailSender" class="uk.co.honda.framework.mail.send.DetachedMailSender" depends-on="emailSenderTimedTask" />
+    <bean id="iSkySender" class="uk.co.honda.framework.isky.send.DetachedISKYSender" depends-on="ISKYGatewaySender" />
+	<bean id="emailSenderTimedTask" class="uk.co.honda.framework.mail.send.MailSenderTimerTask">
+		<property name="sender">
+			<ref parent="mailSenderImpl"/>
+		</property>			
+	</bean>
+	<bean id="coPresenceConduit" class="uk.co.honda.hi.bo.coPresence.CoPresenceConduit" />
+	<bean id="coPresenceTimerTask" class="uk.co.honda.hi.bo.coPresence.CoPresenceTimerTask">
+		<property name="coPresence">
+			<ref local="coPresenceBO"/>
+		</property>
+		<property name="conduit">
+			<ref local="coPresenceConduit"/>
+		</property>
+	</bean>
+	<bean id="coPresenceFilter" class="uk.co.honda.hi.service.filter.CoPresenceFilter">
+		<property name="conduit">
+			<ref local="coPresenceConduit"/>
+		</property>
+	</bean>
+	<bean id="ISKYGatewaySender" class="uk.co.honda.framework.isky.send.ISKYGatewaySender">
+		<property name="contactSender">
+			<ref local="customerContact"/>
+		</property>
+		<property name="callbackSender">
+			<ref local="callback"/>
+		</property>
+	</bean>
+	<bean id="timerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean">
+		<property name="scheduledTimerTasks">
+				<list>
+					<bean class="org.springframework.scheduling.timer.ScheduledTimerTask">
+						<!-- wait 60 seconds before starting repeated execution -->
+						<property name="delay">
+							<value>60000</value>
+						</property>
+						<!-- run every 6 seconds -->
+						<property name="period">
+							<value>6000</value>
+						</property>
+						<property name="timerTask">
+							<ref local="emailSenderTimedTask"/>
+						</property>
+					</bean>
+					<bean class="org.springframework.scheduling.timer.ScheduledTimerTask">
+						<property name="delay">
+							<value>0</value>
+						</property>
+						<!-- run every 1 seconds -->
+						<property name="period">
+							<value>1000</value>
+						</property>
+						<property name="timerTask">
+							<ref local="coPresenceTimerTask"/>
+						</property>
+					</bean>
+					<bean class="org.springframework.scheduling.timer.ScheduledTimerTask">
+						<!-- wait 10 seconds before starting repeated execution -->
+						<property name="delay">
+							<value>2000</value>
+						</property>
+						<!-- run every 1 seconds -->
+						<property name="period">
+							<value>7500</value>
+						</property>
+						<property name="timerTask">
+							<ref local="ISKYGatewaySender"/>
+						</property>
+					</bean>
+				</list>
+		</property>
+	</bean>	
+	<bean id="testDriveHttpInvokerProxy" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+				<property name="staticMethod">
+					<value>uk.co.honda.custonline.base.CustOnLineApp.getConfigProperty</value>
+				</property>
+				<property name="arguments">
+					<value>/honda/service/testdrive/extranetURL</value>
+				</property>
+			</bean>
+		</property>
+		<property name="serviceInterface">
+			<value>uk.co.honda.hi.interfaces.TestdriveService</value>
+		</property>
+	</bean>
+	
+	<!-- SERVICE -->
+	<bean id="coPresenceService" class="org.springframework.remoting.rmi.RmiServiceExporter">
+			<property name="serviceName"><value>CoPresenceService</value></property>
+			<property name="service"><ref bean="coPresenceBO"/></property>
+			<property name="serviceInterface"><value>uk.co.honda.hi.bo.coPresence.CoPresenceBO</value></property>
+			<property name="registryPort"><value>1199</value></property>
+	</bean>
+	
+
+	<!-- CLIENT -->
+	<bean id="coPresenceServiceRMI" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" depends-on="coPresenceService">
+		<property name="serviceUrl">
+			<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+				<property name="staticMethod">
+					<value>uk.co.honda.custonline.base.CustOnLineApp.getConfigProperty</value>
+				</property>
+				<property name="arguments">
+					<value>/honda/service/coPresence/alternateServer</value>
+				</property>
+			</bean>	
+		</property>
+		<property name="serviceInterface"><value>uk.co.honda.hi.bo.coPresence.CoPresenceBO</value></property>
+		<property name="refreshStubOnConnectFailure"><value>true</value></property>
+		<property name="lookupStubOnStartup"><value>false</value></property>
+		<property name="cacheStub"><value>false</value></property>
+	</bean>
+	<bean id="styleManager" class="uk.co.honda.framework.style.StyleManager">
+		<property name="stylesheets">
+			<map>
+				<entry key="testdriveHTML">
+					<value>classpath:xsl/testdriveBookingHTML.xsl</value>
+				</entry>
+				<entry key="testdriveTEXT">
+					<value>classpath:xsl/testdriveBookingTEXT.xsl</value>
+				</entry>
+				<entry key="civicTestDriveHTML">
+					<value>classpath:xsl/civicTestDriveBookingHTML.xsl</value>
+				</entry>
+				<entry key="civicTestDriveTEXT">
+					<value>classpath:xsl/civicTestDriveBookingTEXT.xsl</value>
+				</entry>
+				<entry key="testdriveHondaTEXT">
+					<value>classpath:xsl/testdriveISKYTEXT.xsl</value>
+				</entry>
+				<entry key="testdriveDealerHTML">
+					<value>classpath:xsl/testdriveBookingDealerHTML.xsl</value>
+				</entry>
+				<entry key="testdriveDealerTEXT">
+					<value>classpath:xsl/testdriveBookingDealerTEXT.xsl</value>
+				</entry>
+				<entry key="emailAFriendHTML">
+					<value>classpath:xsl/emailAFriendHTML.xsl</value>
+				</entry>
+				<entry key="emailAFriendTEXT">
+					<value>classpath:xsl/emailAFriendTEXT.xsl</value>
+				</entry>
+				<entry key="secondOpinionTEXT">
+					<value>classpath:xsl/secondOpinionTEXT.xsl</value>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="attachmentStyleManager" class="uk.co.honda.hi.carConfig.AttachmentStyleManager">
+		<property name="stylesheets">
+			<map>
+				<entry key="carConfigPDF">
+					<value>classpath:xsl/carConfigPDF.xsl</value>
+				</entry>
+				<entry key="carConfigEmailHTML">
+					<value>classpath:xsl/carConfigEmailHTML.xsl</value>
+				</entry>
+				<entry key="carConfigEmailTEXT">
+					<value>classpath:xsl/carConfigEmailTEXT.xsl</value>
+				</entry>
+				<entry key="civicBrochureEmailHTML">
+					<value>classpath:xsl/civicBrochureEmailHTML.xsl</value>
+				</entry>
+				<entry key="civicBrochureEmailTEXT">
+					<value>classpath:xsl/civicBrochureEmailTEXT.xsl</value>
+				</entry>
+			</map>
+		</property>
+	</bean>			
+	<bean id="styleSender" class="uk.co.honda.framework.style.StyledSenderWithTemplates" >	
+		<property name="sender">
+			<ref local="emailSender"/>
+		</property>
+		<property name="styleManager">
+			<ref local="styleManager"/>
+		</property>
+		<property name="templateEmails">
+			<map>
+				<entry key="emailAFriend">
+					<bean class="uk.co.honda.framework.mail.HondaMimeMessage">
+						<property name="fromAddress.address">
+							<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+								<property name="staticMethod">
+									<value>uk.co.honda.custonline.base.CustOnLineApp.getConfigProperty</value>
+								</property>
+								<property name="arguments">
+									<value>/honda/service/emailAFriend/hondaFromAddress</value>
+								</property>
+							</bean>
+						</property>
+						<property name="fromAddress.personal">
+							<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+								<property name="staticMethod">
+									<value>uk.co.honda.custonline.base.CustOnLineApp.getConfigProperty</value>
+								</property>
+								<property name="arguments">
+									<value>/honda/service/emailAFriend/hondaFromPersonal</value>
+								</property>
+							</bean>
+						</property>
+						<property name="bcc">
+							<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+								<property name="staticMethod">
+									<value>uk.co.honda.custonline.base.CustOnLineApp.getConfigProperty</value>
+								</property>
+								<property name="arguments">
+									<value>/honda/service/emailAFriend/hondaBCCAddress</value>
+								</property>
+							</bean>
+						</property>
+						<property name="subject">
+							<value>Email a Friend - Honda</value>
+						</property>
+					</bean>
+				</entry>
+				<entry key="secondOpinion">
+					<bean class="uk.co.honda.framework.mail.HondaMimeMessage">
+						<property name="toAddress.address">
+							<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+								<property name="staticMethod">
+									<value>uk.co.honda.custonline.base.CustOnLineApp.getConfigProperty</value>
+								</property>
+								<property name="arguments">
+									<value>/honda/service/secondOpinion/hondaToAddress</value>
+								</property>
+							</bean>
+						</property>
+						<property name="toAddress.personal">
+							<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+								<property name="staticMethod">
+									<value>uk.co.honda.custonline.base.CustOnLineApp.getConfigProperty</value>
+								</property>
+								<property name="arguments">
+									<value>/honda/service/secondOpinion/hondaToPersonal</value>
+								</property>
+							</bean>
+						</property>
+						<property name="cc">
+							<list>
+								<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+									<property name="staticMethod">
+										<value>uk.co.honda.custonline.base.CustOnLineApp.getConfigProperty</value>
+									</property>
+									<property name="arguments">
+										<value>/honda/service/secondOpinion/externalToAddress</value>
+									</property>
+								</bean>
+								<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+									<property name="staticMethod">
+										<value>uk.co.honda.custonline.base.CustOnLineApp.getConfigProperty</value>
+									</property>
+									<property name="arguments">
+										<value>/honda/service/secondOpinion/contactCentreToAddress</value>
+									</property>
+								</bean>
+							</list>
+						</property>
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="attachmentStyleSender" class="uk.co.honda.framework.style.StyledSenderWithTemplates" >	
+		<property name="sender">
+			<ref local="emailSender"/>
+		</property>
+		<property name="styleManager">
+			<ref local="attachmentStyleManager"/>
+		</property>
+		<property name="templateEmails">
+			<map>
+				<entry key="carConfig">
+					<bean class="uk.co.honda.framework.mail.HondaMimeMessage">
+						<property name="fromAddress.address">
+							<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+								<property name="staticMethod">
+									<value>uk.co.honda.custonline.base.CustOnLineApp.getConfigProperty</value>
+								</property>
+								<property name="arguments">
+									<value>/honda/service/carConfig/hondaFromAddress</value>
+								</property>
+							</bean>
+						</property>
+						<property name="fromAddress.personal">
+							<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+								<property name="staticMethod">
+									<value>uk.co.honda.custonline.base.CustOnLineApp.getConfigProperty</value>
+								</property>
+								<property name="arguments">
+									<value>/honda/service/carConfig/hondaFromPersonal</value>
+								</property>
+							</bean>
+						</property>
+					</bean>
+				</entry>
+				<entry key="civicBrochure">
+					<bean class="uk.co.honda.framework.mail.HondaMimeMessage">
+						<property name="fromAddress.address">
+							<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+								<property name="staticMethod">
+									<value>uk.co.honda.custonline.base.CustOnLineApp.getConfigProperty</value>
+								</property>
+								<property name="arguments">
+									<value>/honda/service/civicBrochure/hondaFromAddress</value>
+								</property>
+							</bean>
+						</property>
+						<property name="fromAddress.personal">
+							<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+								<property name="staticMethod">
+									<value>uk.co.honda.custonline.base.CustOnLineApp.getConfigProperty</value>
+								</property>
+								<property name="arguments">
+									<value>/honda/service/civicBrochure/hondaFromPersonal</value>
+								</property>
+							</bean>
+						</property>
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<!-- ========================= BUSINESS OBJECT DEFINITIONS ======================== -->	
+	<bean id="addressFinder" class="uk.co.honda.custonline.clubmember.QasAddressProcessorImpl" />
+	<bean id="customerContact" class="uk.co.honda.custonline.clubmember.bo.CustomerContactCentreBo" />
+	<bean id="coPresenceBO" class="uk.co.honda.hi.bo.coPresence.CoPresenceBOImpl">
+		<property name="remoteCoPresence">
+			<ref local="coPresenceServiceRMI"/>
+		</property>
+	</bean>
+	<bean id="callback" class="uk.co.honda.custonline.clubmember.bo.CustomerContactCallBackBo" />
+	<bean id="testDriveBookingBO" class="uk.co.honda.hi.bo.testdrive.TestDriveBookingBOImpl">
+		<property name="clubMember">
+			<ref bean="clubMember"/>
+		</property>
+		<property name="testDriveBookingDAO">
+			<ref bean="testdriveBookingDAO"/>
+		</property>
+		<property name="dealer">
+			<ref bean="dealerDAO"/>
+		</property>
+		<property name="carDao">
+			<ref bean="testdriveCarDAO"/>
+		</property>
+		<property name="mailSender">
+			<bean class="uk.co.honda.hi.bo.testdrive.TestDriveEmailerImpl">
+				<property name="sender">
+					<ref bean="testDriveStyleSender" />
+				</property>	
+			</bean>
+		</property>
+		<property name="iskyemailaddress">
+							<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+								<property name="staticMethod">
+									<value>uk.co.honda.custonline.base.CustOnLineApp.getConfigProperty</value>
+								</property>
+								<property name="arguments">
+									<value>/honda/service/testdrive/iSKYemailAddress</value>
+								</property>
+							</bean>
+						</property>	
+		<property name="emailContent">
+			<!-- MODEL_YEAR_BODY_BADGE_ENGINE -->
+			<map>
+				<!-- Generic -->
+				<entry key="generic">
+					<list>
+						<value>Bring a few CDs to test out the stereo.</value>
+						<value>Admire the stylish interior.</value>
+						<value>Experiment with the easy-to-read instrumentation.</value>
+						<value>Relax in the comfortable seats.</value>
+						<value>Explore the large boot space.</value>
+					</list>
+				</entry>
+				<!-- Accord Tourer -->
+				<entry key="10410_2005_10734">
+					<list>
+						<value>Bring a few CDs to test out the stereo.</value>
+						<value>Check out the huge load space and power operated tailgate.</value>
+						<value>Try folding down the rear seats (it's so easy).</value>
+						<value>See how all the instruments are within easy reach.</value>
+						<value>Enjoy its sporty performance (you'll forget it's an estate car).</value>
+					</list>
+				</entry>
+				<!-- Accord Saloon -->
+				<entry key="10410_2005_10730">
+					<list>
+						<value>Bring a few CDs to test out the stereo.</value>
+						<value>Check out the bottom-hinged accelerator pedal.</value>
+						<value>Relax in the body-contoured seats.</value>
+						<value>Notice how all the instruments are within easy reach.</value>
+						<value>Open up the front armrests to reveal the handy trinket tray.</value>
+						<value>Feel the sharp response of the F1 inspired suspension.</value>
+					</list>
+				</entry>
+				<!-- Civic IMA -->
+				<entry key="10413_2005_10730_10450_10406">
+					<list>							
+						<value>Bring a few CDs to test out the stereo.</value>
+						<value>Open it using the Honda 'magic' key fob.</value>
+						<value>Ask how the electric motor helps the 1.3-litre petrol engine.</value>
+						<value>Check out our Dual Zone instrument panel.</value>
+						<value>Notice how much room there is throughout the car</value>
+						<value>Admire the full leather interior.</value>							
+					</list>
+				</entry>
+				<!-- Civic Type-R -->
+				<entry key="10413_2005_10732_10422_10425">
+					<list>
+						<value>Bring a few CDs to test out the stereo.</value>
+						<value>Look for the unique serial number.</value>
+						<value>Get a grip of the Momo steering wheel.</value>
+						<value>Examine the body hugging Recaro seats.</value>
+						<value>Try its sixth gear on a slightly longer drive.</value>
+					</list>
+				</entry>
+				<!-- Civic 06 -->
+				<entry key="10413_2006">
+					<list>
+						<value>Bring a few CDs to test out the stereo.</value>
+						<value>Notice how this spacious 5 door looks like a sleek 3 door coupe.</value>
+						<value>Sit in the seats and enjoy the wraparound layout.</value>
+						<value>Check out the futuristic 'dual zone' dashboard.</value>
+						<value>Try out the flip-up 'magic' seats in the rear.</value>
+						<value>Examine the huge boot (and handy under-floor space).</value>
+						<value>Feel the incredible responsiveness of the 6-speed gear box.</value>
+					</list>
+				</entry>
+				<!-- CR-V -->
+				<entry key="10409">
+					<list>
+						<value>Bring a few CDs to test out the stereo.</value>
+						<value>Check out the special swing-up hatch in the back door.</value>
+						<value>Recline in the theatre-style rear seats (and try folding them flat to the floor).</value>
+						<value>Look for the special wet-storage space in the back.</value>
+						<value>Relax in the front seats and examine the perfectly positioned armrest.</value>			
+					</list>
+				</entry>
+				<!-- FR-V -->
+				<entry key="10426">
+					<list>
+						<value>Bring a few CDs to test out the stereo.</value>
+						<value>Get one of your kids to sit in the front middle seat.</value>
+						<value>Fold the centre seat down into a picnic table. </value>
+						<value>Check out the pull-out seat bases.</value>
+						<value>Notice how the car hugs the road when you’re driving</value>
+						<value>Ask about the entertainment system and drop-down DVD screen.</value>					
+					</list>
+				</entry>
+				<!-- Jazz -->
+				<entry key="10408">
+					<list>
+						<value>Bring a few CDs to test out the stereo.</value>	
+						<value>See how much space you get inside such a small car.</value>	
+						<value>Check out the flip-up 'magic' rear seats and try folding them to the floor.</value>	
+						<value>Notice how the dashboard instruments are right at your fingertips.</value>	
+						<value>Enjoy the responsive i-DSI engine.</value>				
+					</list>
+				</entry>
+				<!-- S2000 -->
+				<entry key="10416">
+					<list>
+						<value>Bring a few CDs to test out the stereo.</value>
+						<value>See how the body-hugging seats draw you deep inside the car.</value>
+						<value>Don't forget to look in the boot - there's more space than you’d think.</value>
+						<value>Check out the lockable storage space between the seats.</value>
+						<value>Examine the drilled aluminium pedals.</value>
+						<value>Press the red starter button and feel the engine burst into life.</value>
+					</list>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="testDriveDealerBO" class="uk.co.honda.hi.bo.testdrive.TestDriveDealerBOImpl">
+		<property name="testDriveDealerSearchDAO">
+			<ref bean="testDriveDealerSearchDAO"/>
+		</property>
+		<property name="cardetail">
+			<ref bean="carDetailsDAO"/>
+		</property>
+		<property name="carCrossReference">
+			<ref bean="carCrossReferenceDAO"/>
+		</property>
+		<property name="dealer">
+			<ref bean="dealerDAO"/>
+		</property>
+	</bean>		
+	<bean id="carDetailsBO" class="uk.co.honda.hi.bo.carConfig.CarDetailsBOImpl">
+		<property name="carDetailsDAO">
+			<ref bean="carDetailsDAO"/>
+		</property>
+		<property name="emailImages">
+			<!-- MODEL_YEAR_BODY_BADGE_ENGINE -->
+			<map>
+				<!-- Generic -->
+				<entry key="generic">
+					<value>Civic06</value>
+				</entry>
+				<!-- Accord Tourer -->
+				<entry key="10410_2005_10734">
+					<value>AccordTourer</value>
+				</entry>
+				<!-- Accord Saloon -->
+				<entry key="10410_2005_10730">
+					<value>AccordSaloon</value>
+				</entry>
+				<!-- Civic IMA -->
+				<entry key="10413_2005_10730_10450_10406">
+					<value>CivicIMA</value>
+				</entry>
+				<!-- Civic Type-R -->
+				<entry key="10413_2005_10732_10422_10425">
+					<value>CivicType-R</value>
+				</entry>
+				<!-- Civic 06 -->
+				<entry key="10413_2006">
+					<value>Civic06</value>
+				</entry>
+				<!-- CR-V -->
+				<entry key="10409">
+					<value>CR-V</value>
+				</entry>
+				<!-- FR-V -->
+				<entry key="10426">
+					<value>FR-V</value>
+				</entry>
+				<!-- Jazz -->
+				<entry key="10408">
+					<value>Jazz</value>
+				</entry>
+				<!-- S2000 -->
+				<entry key="10416">
+					<value>S2000</value>
+				</entry>
+			</map>
+		</property>
+	</bean>		
+	<!-- ========================= DAO DEFINITIONS ========================= -->
+	<bean id="dealerDAO" class="uk.co.honda.hi.data.dealer.dao.DealerDao">
+		<property name="dataSource">
+			<ref parent="dataSource" />
+		</property>
+		<property name="dealerIskyInterventionTime">
+				<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+					<property name="staticMethod">
+						<value>uk.co.honda.custonline.base.CustOnLineApp.getConfigProperty</value>
+					</property>
+					<property name="arguments">
+						<value>/honda/iSKYConfig/iskyTestDriveInterventionHours</value>
+					</property>
+				</bean>			
+		</property>
+		<property name="dealerCutoffTime">
+			<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+					<property name="staticMethod">
+						<value>uk.co.honda.custonline.base.CustOnLineApp.getConfigProperty</value>
+					</property>
+					<property name="arguments">
+						<value>/honda/dealerInformation/dealerCutoffTime</value>
+					</property>
+				</bean>
+		</property>
+		<property name="dealerDiaryLocation">
+			<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+					<property name="staticMethod">
+						<value>uk.co.honda.custonline.base.CustOnLineApp.getConfigProperty</value>
+					</property>
+					<property name="arguments">
+						<value>/honda/dealerInformation/dealerDiaryTimesLocation</value>
+					</property>
+				</bean>
+		</property>
+		<property name="excludedDealers">
+			<map>
+				<!--<entry key="ARN376"><value>Y</value></entry>-->
+			</map>
+		</property>
+	</bean>
+	<bean id="carDetailsDAO" class="uk.co.honda.hi.data.carConfig.dao.CarDetailsDAOImpl">
+		<property name="dataSource">
+			<ref parent="dataSource" />
+		</property>
+	</bean>
+	<bean id="ssdifDAO" class="uk.co.honda.hi.data.ssdif.dao.SSDIFDAO">
+		<property name="dataSource">
+			<ref parent="dataSource" />
+		</property>	
+	</bean>
+</beans>
