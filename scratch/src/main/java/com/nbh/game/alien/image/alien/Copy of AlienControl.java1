@@ -1,0 +1,62 @@
+package image.alien;
+
+/*
+ * alienControl.java
+ *
+ * Created on 21 October 2002, 20:28
+ * 
+ * controls the deployment of Aliens !
+ * @author  neal and rachel
+ */
+
+import image.alien.*;
+import java.util.*;
+import javax.swing.*;
+import java.awt.*;
+import java.applet.*;
+
+public class AlienControl {
+
+    boolean msgs = true;
+    int maxX=350,maxY=250;
+    /** Creates a new instance of alienControl */
+    Vector squad;
+    
+    public AlienControl(int numberofAliens, int _xPos, int _yPos) {
+    
+        squad = new Vector(numberofAliens);        
+        if (msgs)
+            System.out.println("At AlienControl, creation of aliens");
+        maxX=_xPos;      
+        maxY= _yPos;
+        
+        // need initial values..
+        int x=200,y=30;
+
+        for (int i=0;i<numberofAliens;i++){
+            
+            Alien a = new Alien(this,maxX, maxY);
+            a.setX(x+=15);
+            a.setY(y);
+            squad.addElement(a);
+            if (msgs)
+                System.out.println("Created Alient number "+i);
+        }                
+    }
+
+    public void notifyBottomReached(image.alien.Alien victoriousAlien){
+
+        if (msgs)
+            System.out.println("Bottom reached !!");
+        squad.remove(victoriousAlien);
+    }
+    
+    public void DrawAliens(Graphics g){
+     
+        for (int i=0;i<squad.size();i++){
+            
+            Alien a = (Alien)squad.elementAt(i);
+            a.drawObject(g);
+        }        
+    }
+}
