@@ -1,6 +1,0 @@
-The JPanel becomes the intelligent part of the GUI.
-It creates the lights.
-It has event listeners.
-It can control the updating of the screen.
-
-JPanels are fantastic !!

@@ -3,102 +3,43 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>nbh.com</groupId>
-    <artifactId>tutorials</artifactId>
-    <packaging>jar</packaging>
-    <version>0.9</version>
-    <name>Neal's Tutorials</name>
-    <url>http:uldn0002/cem</url>
-    <prerequisites>
-        <maven>2.0.6</maven>
-    </prerequisites>
+    <groupId>com.nbh</groupId>
+    <artifactId>research</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>research parent</name>
+
+	<prerequisites>
+		<maven>3.1.1</maven>
+	</prerequisites>
+	
+	<modules>
+		<!-- Rename, add or remove the modules list below as required -->
+		<!-- <module>db-migrations</module> -->
+		<module>scratch</module>
+	</modules>
+	
      <build>
-		<plugins>
-			<!-- clean work folder -->
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>auto-clean</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>clean</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+     <pluginManagement>
+		<plugins>			
 			<!-- Maven compiler settings -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.0.2</version>
+				<version>2.3.2</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
 					<!--<executable>C:\apps\jdk167\bin</executable>-->
 					<meminitial>256m</meminitial>
-					<maxmem>512m</maxmem>					
+					<maxmem>512m</maxmem>	
+					<!--<encoding>UTF-8</encoding>					-->
 				</configuration>
-			</plugin>
-			<!-- Maven war plugin -->
-			
-			<!-- Eclipse plugin -->
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.5.1</version>
-
-				<configuration>
-					<spring>
-						<version>2.5.6</version>
-						<file-pattern>
-							applicationContext-*.xml
-						</file-pattern>
-						<basedir>src/main/webapp/WEB-INF/</basedir>
-					</spring>
-					<projectnatures>
-						<projectnature>
-							org.eclipse.jdt.core.javanature
-						</projectnature>
-						<projectnature>
-							org.eclipse.wst.common.modulecore.ModuleCoreNature
-						</projectnature>
-						<projectnature>
-							org.eclipse.wst.common.project.facet.core.nature
-						</projectnature>
-					</projectnatures>
-					<additionalProjectnatures>
-						<projectnature>
-							org.springframework.ide.eclipse.core.springnature
-						</projectnature>
-					</additionalProjectnatures>
-					<additionalBuildcommands>
-						<buildcommand>
-							org.springframework.ide.eclipse.core.springbuilder
-						</buildcommand>
-					</additionalBuildcommands>
-					<additionalProjectFacets>
-						<jst.web>2.4</jst.web>
-						<!--<com.ibm.websphere.extended.web>
-							6.1
-							</com.ibm.websphere.extended.web>
-							<com.ibm.websphere.coexistence.web>
-							6.1
-							</com.ibm.websphere.coexistence.web>
-						-->
-					</additionalProjectFacets>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>true</downloadJavadocs>
-					<wtpversion>1.5</wtpversion>
-					<wtpmanifest>true</wtpmanifest>
-				</configuration>
-			</plugin>			
+			</plugin>		
 		</plugins>
+		</pluginManagement>
 	</build>
     	
 	<repositories>	
-		<!--<repository>
-			<id>local</id>
-			<url>\\C$\Documents and Settings\uinxh\.m2\repository	</url>
-		</repository>-->
 		<repository>
 			<id>central</id>
 			<url>http://repo1.maven.org/maven2</url>
@@ -108,87 +49,15 @@
 	
 	<dependencies>
 		<dependency>
-		    <groupId>org.acegisecurity</groupId>
-		    <artifactId>acegi-security</artifactId>
-		    <version>1.0.7</version>
-		</dependency> 				
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
-		</dependency>		
-		<dependency>
-		    <groupId>dom4j</groupId>
-		    <artifactId>dom4j</artifactId>
-		    <version>1.6</version>
-		</dependency> 		
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate</artifactId>
-			<version>3.2.6.ga</version>
-		</dependency>				
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jsp-api</artifactId>
-			<version>2.0</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.4</version>
-			<scope>provided</scope>
-		</dependency>		
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.0</version>
+			<version>4.12</version>
+			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.1.2</version>
-		</dependency>	
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.14</version>
+			<version>1.2.16</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>2.5.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring</artifactId>
-			<version>2.5.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aspects</artifactId>
-			<version>2.5.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-mock</artifactId>
-			<version>2.0.6</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>2.5.2</version>
-		</dependency>
-		<dependency>
-		    <groupId>taglibs</groupId>
-		    <artifactId>standard</artifactId>
-		    <version>1.1.2</version>
-		</dependency> 		
-		<!--<dependency>
-			<groupId>ibm</groupId>
-			<artifactId>db2java</artifactId>
-			<version>1.0</version>
-			<type>zip</type>
-			<scope>provided</scope>
-		</dependency>-->
 	</dependencies>
 </project>

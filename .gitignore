@@ -1,2 +1,12 @@
-.idea
+
 *.iml
+/target/
+/bin/
+
+
+.externalToolBuilders
+.settings
+.classpath
+.project
+.idea
+
