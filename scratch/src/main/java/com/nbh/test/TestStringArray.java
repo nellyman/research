@@ -1,13 +1,15 @@
+package com.nbh.test;
+
 
 
 public class TestStringArray{
 
 
 
-	public static void main(String[] args){
+    public static void main(final String[] args){
 
-		char[] chars = new char[20];
-		System.out.println(":"+new String(chars)+":");
+        final char[] chars = new char[20];
+        System.out.println(":"+new String(chars)+":");
 
-	}
+    }
 }

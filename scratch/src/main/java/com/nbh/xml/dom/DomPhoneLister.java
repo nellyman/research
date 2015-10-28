@@ -15,7 +15,7 @@ public class DomPhoneLister {
         try {
 
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            final DocumentBuilder saxParser = factory.newDOMParser();
+            final DocumentBuilder saxParser = factory.newDocumentBuilder();
 
             factory.setValidating(false);
             factory.setNamespaceAware(false);
@@ -23,13 +23,15 @@ public class DomPhoneLister {
 
             final DefaultHandler handler = new DefaultHandler() {
                 boolean name = false;
+                @Override
                 public void startElement(final String uri, final String localName,
-                        final String qName, final Attributes attributes)
+                        final String qName, final org.xml.sax.Attributes attributes)
                                 throws SAXException {
                     if (qName.equalsIgnoreCase("NAME")) {
                         this.name = true;
                     }
                 }
+                @Override
                 public void characters(final char ch[], final int start, final int length)
                         throws SAXException {
                     if (this.name) {
@@ -40,7 +42,7 @@ public class DomPhoneLister {
                 }
             };
 
-            saxParser.parse("c:\\mystuff\\java\\projectSrc\\phonebook.xml", handler);
+            saxParser.parse("c:\\mystuff\\java\\projectSrc\\phonebook.xml");
 
         } catch (final Exception e) {
             e.printStackTrace();

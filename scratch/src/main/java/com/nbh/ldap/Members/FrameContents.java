@@ -47,6 +47,8 @@ public class FrameContents extends JPanel{
     JList attributeList=null;
     JList memberList=null;
     SchemaInfo LDAPinfo;
+    JList opoList=null;
+
 
     public FrameContents(){
 
@@ -54,7 +56,7 @@ public class FrameContents extends JPanel{
 
         this.LDAPinfo=new SchemaInfo();		// initialise the class to produce the schema information.
         this.LDAPinfo.getSchema();
-        final LDAPlistener memberListener=new LDAPlistener(this);
+        final LDAPlistener memberListener=null; //new LDAPlistener(this);
         final Font fnt=new Font("Arial",Font.BOLD,14);
 
         // serverSelector  has labels and text fields for server selection.
@@ -131,9 +133,9 @@ public class FrameContents extends JPanel{
 		if (opCheck.size()==0)
 			opCheck.add("");
 		opoList=new JList(opCheck);*/
-        opoList=new JList();
+        this.opoList=new JList();
         final JScrollPane opoPane = new JScrollPane();
-        opoPane.getViewport().setView(opoList);
+        opoPane.getViewport().setView(this.opoList);
         opoPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         opoPane.setPreferredSize(new Dimension(180, 100));
         rightLower.add(BorderLayout.SOUTH,opoPane);
@@ -147,7 +149,7 @@ public class FrameContents extends JPanel{
         this.attributeList.setListData(this.LDAPinfo.getRequiredAttrs(index));
     }
     public void setOpoBox(final int index){
-        opoList.setListData(this.LDAPinfo.getOptionalAttrs(index));
+        this.opoList.setListData(this.LDAPinfo.getOptionalAttrs(index));
     }
 
     // Sets the class names box -used after a change of server.

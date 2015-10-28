@@ -1,60 +1,56 @@
-package com.nbh.LDAP;
+package com.nbh.ldap;
 
-import netscape.ldap.*;
-import neal.app.log.*;
-import java.util.*;
-import java.io.*;
+import java.util.StringTokenizer;
 
 public class Schema{
 
     public Schema(){
 
-	LDAPConnection ld = new LDAPConnection();
+        final LDAPConnection ld = new LDAPConnection();
 
-		/* Construct a new LDAPSchema object to hold
+        /* Construct a new LDAPSchema object to hold
 			   the schema that you want to retrieve. */
-	LDAPSchema dirSchema = new LDAPSchema();
+        //final LDAPSchema dirSchema = new LDAPSchema();
 
-	char hr=10;
+        final char hr=10;
 
-	System.out.println("Creating a log file - LDAP.log for reference...");
-
-
-	try {
-				log theLog=new log("LDAP.log");
-			   ld.connect( "ben.consultivity.com",389, "cn=directory manager", "bigcabbage");
-			   /* Get the schema from the Directory. Anonymous access okay. */
-			   dirSchema.fetchSchema( ld );
+        System.out.println("Creating a log file - LDAP.log for reference...");
 
 
-                //Get and print the inetOrgPerson object class description.
-                LDAPObjectClassSchema objClass = dirSchema.getObjectClass("inetOrgPerson" );
-                if ( objClass != null ) {
-			                    // System.out.println("inetOrgPerson := "+objClass.toString()+"\n");
-			                    String personDetails=objClass.toString();
-								StringTokenizer st = new StringTokenizer(personDetails);
-								while (st.hasMoreTokens()) {
-										String snippet=st.nextToken();
-								         System.out.println(snippet);
-								         theLog.add(snippet);
-								     }
+        try {
+
+            ld.connect( "ben.consultivity.com",389);
+            /* Get the schema from the Directory. Anonymous access okay. */
+            //dirSchema.fetchSchema( ld );
+
+
+            //Get and print the inetOrgPerson object class description.
+            final LDAPObjectClassSchema objClass = null; //dirSchema.getObjectClass("inetOrgPerson" );
+            if ( objClass != null ) {
+                // System.out.println("inetOrgPerson := "+objClass.toString()+"\n");
+                final String personDetails=objClass.toString();
+                final StringTokenizer st = new StringTokenizer(personDetails);
+                while (st.hasMoreTokens()) {
+                    final String snippet=st.nextToken();
+                    System.out.println(snippet);
                 }
+            }
 
-                // Get and print the definition of the userPassword attribute.
-                LDAPAttributeSchema attrType = dirSchema.getAttribute("userpassword" );
-                if ( attrType != null ) {
-			                    System.out.println("userPassword := " + attrType.toString()+"\n");
-                }
+            // Get and print the definition of the userPassword attribute.
+            /*    final LDAPAttributeSchema attrType = dirSchema.getAttribute("userpassword" );
+            if ( attrType != null ) {
+                System.out.println("userPassword := " + attrType.toString()+"\n");
+            }*/
 
-		}
-		catch ( Exception e ) {
+        }
+        catch ( final Exception e ) {
 
-   				System.err.println( e.toString() );
-		}
-  }
+            System.err.println( e.toString() );
+        }
+    }
 
-public static void main(String[] args){
+    public static void main(final String[] args){
 
-	Schema Scheme=new Schema();
-}
+        final Schema Scheme=new Schema();
+    }
 }

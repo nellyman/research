@@ -22,121 +22,124 @@ package com.nbh.ldap;
  * Vector getOptionalAttrs(int index)
  *
  **/
-import netscape.ldap.*;
-import java.util.*;
+
+import java.util.Enumeration;
+import java.util.Vector;
 
 // class used to pull LDAP information. Used mainly for LDAPpan and LDAPframe.
 
 public class SchemaInfo{
-    
+
     private String LDAP="localhost";
     private int port=389;
-    private Vector allClasses,allNames;
-    
+    private final Vector allClasses,allNames;
+
     // Constructor.
     // initialises Vectors
     public SchemaInfo() {
-        
-        allClasses=new Vector();
-        allNames=new Vector();
+
+        this.allClasses=new Vector();
+        this.allNames=new Vector();
     }
-    
+
     // void setServer(String name)
     // sets the LDAP server's name.
     // The name is stored in a class variable.
-    public void setServer(String name){
-        LDAP=name;
+    public void setServer(final String name){
+        this.LDAP=name;
     }
     // void setPort(int Portnumber)
     // sets the LDAP servers port.
     // The int is stored in a class variable.
-    public void setPort(int newPort){
-        port=newPort;
+    public void setPort(final int newPort){
+        this.port=newPort;
     }
-    
+
     // void getSchema()
     // Gets the schema from the LDAP server.
     // Stores the information in two Vectors.
     // allClasses -contaning the class objects
     // and allNames - A vector of all the class names.
     public void getSchema() {
-        
-        allClasses.clear();
-        allNames.clear();
-        LDAPConnection ld = new LDAPConnection();
-        LDAPSchema theWholeSchema = new LDAPSchema();		// The LDAPSchema object,
+
+        this.allClasses.clear();
+        this.allNames.clear();
+        final LDAPConnection ld = new LDAPConnection();
+        //final LDAPSchema theWholeSchema = new LDAPSchema();		// The LDAPSchema object,
         try{
-            ld.connect(LDAP,port);
-            theWholeSchema.fetchSchema( ld );											// retrieve the schema
+            ld.connect(this.LDAP,this.port);
+            //theWholeSchema.fetchSchema( ld );											// retrieve the schema
         }
-        catch(LDAPException ex){}
-        Enumeration classes=theWholeSchema.getObjectClasses();		// Get the classes into an enumeration.
-        
-        while (classes.hasMoreElements()){
-            LDAPObjectClassSchema indvScheme=(LDAPObjectClassSchema) classes.nextElement();		// get the definition of the induvidual class
-            allClasses.add(indvScheme);					// Create a vector from the enumeration - ready for calling class to read.
-            allNames.add(indvScheme.getName());
-        }
+        catch(final LDAPException ex){}
+        final Enumeration classes=null; //theWholeSchema.getObjectClasses();		// Get the classes into an enumeration.
+
+        /* while (classes.hasMoreElements()){
+            final LDAPObjectClassSchema indvScheme=(LDAPObjectClassSchema) classes.nextElement();		// get the definition of the induvidual class
+            this.allClasses.add(indvScheme);					// Create a vector from the enumeration - ready for calling class to read.
+            this.allNames.add(indvScheme.getName());
+        }*/
     }
-    
+
     // Vector getClasses()
     // returns the vector with all Classes retrieved by the getSchema() method.
-    
+
     public Vector getClasses(){					// All the classes
-        return allClasses;
+        return this.allClasses;
     }
-    
+
     // Vector getClassNames()
     // Returns the vector containing all the class names found by getSchema.
     public Vector getClassNames(){ 				// Outputs a vector containing all the NAMES of the classes in the schema.
-        
-        return allNames;
+
+        return this.allNames;
     }
-    
+
     // Vector getRequiredAttrs(int index)
     // Pulls out the required attributes for a class at a specific index in the classVector
-    public Vector getRequiredAttrs(int index){
-        
-        Vector returnedReqs=new Vector();
-        LDAPObjectClassSchema currentOne=(LDAPObjectClassSchema)allClasses.get(index);
-        if (currentOne==null)
+    public Vector getRequiredAttrs(final int index){
+
+        final Vector returnedReqs=new Vector();
+        final LDAPObjectClassSchema currentOne=(LDAPObjectClassSchema)this.allClasses.get(index);
+        if (currentOne==null) {
             return null;
-        Enumeration attrs=currentOne.getRequiredAttributes();				// The required attributes
-        while (attrs.hasMoreElements()){
-            returnedReqs.add((String)attrs.nextElement());
         }
+        /*final Enumeration attrs=currentOne.getRequiredAttributes();				// The required attributes
+        while (attrs.hasMoreElements()){
+            returnedReqs.add(attrs.nextElement());
+        }*/
         return returnedReqs;
     }
-    
+
     //Vector getOptionalAttrs(int index)
     // Pulls out the optional attributes for a class at a specific index in the 'class' vector.
-    public Vector getOptionalAttrs(int index){
-        
-        Vector optionalReqs=new Vector();
-        LDAPObjectClassSchema currentOne=(LDAPObjectClassSchema)allClasses.get(index);
-        if (currentOne==null)
+    public Vector getOptionalAttrs(final int index){
+
+        final Vector optionalReqs=new Vector();
+        final LDAPObjectClassSchema currentOne=(LDAPObjectClassSchema)this.allClasses.get(index);
+        if (currentOne==null) {
             return null;
-        Enumeration attrs=currentOne.getOptionalAttributes();				// The required attributes
-        while (attrs.hasMoreElements()){
-            optionalReqs.add((String)attrs.nextElement());
         }
+        /*final Enumeration attrs=currentOne.getOptionalAttributes();				// The required attributes
+        while (attrs.hasMoreElements()){
+            optionalReqs.add(attrs.nextElement());
+        }*/
         return optionalReqs;
     }
-    
-    
-    public static void main(String[] args){
-        
+
+
+    public static void main(final String[] args){
+
         SchemaInfo theSchema=null;
         theSchema=new SchemaInfo();
-//        theSchema.Schema();
-        Vector v=theSchema.getClasses();
-        Enumeration e=v.elements();
+        //        theSchema.Schema();
+        final Vector v=theSchema.getClasses();
+        final Enumeration e=v.elements();
         while (e.hasMoreElements()){
-            LDAPObjectClassSchema thisOne=(LDAPObjectClassSchema )e.nextElement();
-            System.out.println(thisOne.getName());
+            final LDAPObjectClassSchema thisOne=(LDAPObjectClassSchema )e.nextElement();
+            //  System.out.println(thisOne.getName());
         }
-        Enumeration reqAttrs=theSchema.getRequiredAttrs(12).elements();
-        Enumeration optioAttrs=theSchema.getOptionalAttrs(12).elements();
+        final Enumeration reqAttrs=theSchema.getRequiredAttrs(12).elements();
+        final Enumeration optioAttrs=theSchema.getOptionalAttrs(12).elements();
         while (reqAttrs.hasMoreElements()){
             System.out.println("Required : "+reqAttrs.nextElement());
         }

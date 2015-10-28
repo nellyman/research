@@ -6,42 +6,44 @@
 
 package com.nbh.tutorials.shop;
 
-import javax.servlet.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.sql.*;
-import com.satsumas.sql.SQLAccess;
 
 /**
  *
  * @author  neal and rachel
  */
 public class ProductDAOSQL implements ProductDAO{
-    
+
     /*private SQLAccess DAO;
-     
+
     public ProductDAOSQL(ServletContext config) {
-     
+
         DAO = (SQLAccess)config.getAttribute("sqlConnection");
         if (DAO==null)
             throw new RuntimeException("No connection to database exists in the servletcontext");
     }
      */
-    
+
+    @Override
     public ArrayList getProductsVO(){
-        
-        ArrayList results = new ArrayList();
-        java.sql.Connection connection = SQLAccess.openConnection();
+
+        final ArrayList results = new ArrayList();
+        final java.sql.Connection connection = SQLAccess.openConnection();
         try{
-            PreparedStatement ps = connection.prepareStatement("SELECT * from products");
+            final PreparedStatement ps = connection.prepareStatement("SELECT * from products");
             ps.executeQuery();
-            ResultSet rs = ps.getResultSet();
+            final ResultSet rs = ps.getResultSet();
             while (rs.next()){
-                ProductVO product=new ProductVO(rs.getString("id"), rs.getString("name"), rs.getString("price"));
+                final ProductVO product=new ProductVO(rs.getString("id"), rs.getString("name"), rs.getString("price"));
                 results.add(product);
             }
         }
-        catch(SQLException sqle){
-            
+        catch(final SQLException sqle){
+
             System.err.println("Exception generated getting products");
         }
         finally{
@@ -49,18 +51,19 @@ public class ProductDAOSQL implements ProductDAO{
         }
         return results;
     }
-    
-    public boolean putProduct(String name, String price){
-        
+
+    @Override
+    public boolean putProduct(final String name, final String price){
+
         boolean result=true;
-        Connection connection = SQLAccess.openConnection();
+        final Connection connection = SQLAccess.openConnection();
         try{
-            PreparedStatement ps = connection.prepareStatement("insert into products (name,price) values('?',?)");
+            final PreparedStatement ps = connection.prepareStatement("insert into products (name,price) values('?',?)");
             ps.setString(1, name);
             ps.setString(2, price);
             ps.executeUpdate();
         }
-        catch(SQLException sqle){
+        catch(final SQLException sqle){
             System.err.println("Error generated updating database");
             result=false;
         }
@@ -69,18 +72,19 @@ public class ProductDAOSQL implements ProductDAO{
         }
         return result;
     }
-    
-    public ProductVO getProduct(int ID) {
-        Connection connection=SQLAccess.openConnection();
+
+    @Override
+    public ProductVO getProduct(final int ID) {
+        final Connection connection=SQLAccess.openConnection();
         ProductVO data=null;
         try{
-            PreparedStatement ps = connection.prepareStatement("select * from products where ID=?");
+            final PreparedStatement ps = connection.prepareStatement("select * from products where ID=?");
             ps.setString(1, String.valueOf(ID));
-            ResultSet rs = ps.executeQuery();
+            final ResultSet rs = ps.executeQuery();
             rs.next();
             data=new ProductVO(rs.getString("id"), rs.getString("name"), rs.getString("price"));
         }
-        catch(SQLException sqle){
+        catch(final SQLException sqle){
             System.err.println("Error getting information on product ID "+ID+" "+sqle.getMessage());
         }
         finally{
@@ -88,5 +92,5 @@ public class ProductDAOSQL implements ProductDAO{
         }
         return data;
     }
-    
+
 }

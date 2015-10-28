@@ -1,11 +1,13 @@
- import javax.swing.JOptionPane;
+package com.nbh.gui;
 
- public class GetInputFromKeyboard {
+import javax.swing.JOptionPane;
 
- public static void main( String[] args ){
-	String name = "";
- 	name=JOptionPane.showInputDialog(“Please enter your name");
-	 String msg = "Hello " + name + "!";
-	JOptionPane.showMessageDialog(null, msg);
- }
+public class SimpleDialog {
+
+    public static void main( final String[] args ){
+        String name = "";
+        name=JOptionPane.showInputDialog("Please enter final your name");
+        final String msg = "Hello " + name + "!";
+        JOptionPane.showMessageDialog(null, msg);
+    }
 }

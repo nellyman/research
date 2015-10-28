@@ -17,6 +17,8 @@
 		<!-- Rename, add or remove the modules list below as required -->
 		<!-- <module>db-migrations</module> -->
 		<module>scratch</module>
+		<module>Mockito</module>
+		<module>Selenium</module>
 	</modules>
 	
      <build>
