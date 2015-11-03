@@ -19,6 +19,7 @@
 		<module>scratch</module>
 		<module>Mockito</module>
 		<module>Selenium</module>
+		<module>no-webxml</module>
 	</modules>
 	
      <build>
