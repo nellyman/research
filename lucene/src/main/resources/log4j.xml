@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <appender class="org.apache.log4j.ConsoleAppender" name="console">
+        <param value="DEBUG" name="Threshold"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param value="%d %p {%t} [%c] | %m%n" name="ConversionPattern"/>
+        </layout>
+    </appender>
+    <!-- Custom Loggers  -->
+    <logger name="com.cisco.asf.policycentral">
+        <level value="DEBUG"/>
+    </logger>
+    <logger name="org.springframework" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="console"/>
+    </logger>
+    <logger name="org.hibernate" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="console"/>
+    </logger>
+    <logger name="org.dbunit.dataset.xml" additivity="false">
+        <level value="ERROR"/>
+        <appender-ref ref="console"/>
+    </logger>
+    <!--Set org.hibernate at INFO to get session metrics. -->
+    <root>
+        <level value="debug"/>
+        <appender-ref ref="console"/>
+    </root>
+</log4j:configuration>
+
+
