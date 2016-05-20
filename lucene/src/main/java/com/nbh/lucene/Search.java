@@ -2,6 +2,7 @@ package com.nbh.lucene;
 
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -17,7 +18,10 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
-import org.apache.lucene.util.Version;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.PrintStream;
 
 
 /**
@@ -31,9 +35,14 @@ public class Search {
 
     public static void main(String[] args) throws Exception{
 
+        Logger logger= LoggerFactory.getLogger(Search.class);
+
         Analyzer analyzer = new StandardAnalyzer();
+        //Analyzer analyzer = new WhitespaceAnalyzer();
         Directory directory = new RAMDirectory();
-        IndexWriterConfig config= new IndexWriterConfig(analyzer);
+
+        PrintStream out =new PrintStream(System.out);
+        IndexWriterConfig config= new IndexWriterConfig(analyzer).setInfoStream(out);
         IndexWriter indexWriter = new IndexWriter(directory, config);
 
         Document doc = new Document();
@@ -58,18 +67,18 @@ public class Search {
         IndexSearcher indexSearcher = new IndexSearcher(indexReader);
 
         QueryParser parser = new QueryParser(FIELDNAME, analyzer);
-        Query query = parser.parse("Lucene");
+        Query query = parser.parse("This");
 
         int hitsPerPage = 10;
         TopDocs docs = indexSearcher.search(query, hitsPerPage);
         ScoreDoc[] hits = docs.scoreDocs;
         int end = Math.min(docs.totalHits, hitsPerPage);
-        System.out.println("Total Hits: " + docs.totalHits);
-        System.out.println(" Results: ");
+        logger.info("Total Hits: " + docs.totalHits);
+        logger.info(" Results: ");
         for (int i = 0; i < end; i++) {
             Document d = indexSearcher.doc(hits[i].doc);
-            System.out.println("Content: " + d.get("Content"));
+            logger.info("Content: " + d.get("Content"));
         }
-
+        logger.info("Done!");
     }
 }
