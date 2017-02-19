@@ -31,7 +31,7 @@ public class PremResultsLoader {
         final WebDriver driver = new FirefoxDriver();
         driver.manage().window().setPosition(new Point(0, 0));
         driver.manage().window().setSize(new Dimension(500, 300));
-        driver.get("http://www.premierleague.com/content/premierleague/en-gb/matchday/results.html"
+        driver.get("http://www.premierleague.com/results"
                 + "?paramClubId=ALL"
                 + "&paramComp_8=true"
                 + "&paramSeasonId=2013"
