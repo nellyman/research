@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.nbh</groupId>
     <artifactId>research</artifactId>
@@ -20,6 +19,14 @@
 		<module>Mockito</module>
 		<module>Selenium</module>
 		<module>no-webxml</module>
+		<module>javaversioneight</module>
+		<module>testing</module>
+		<module>pattern</module>
+		<module>spring_testing</module>
+		<module>spring-rest-testing</module>
+		<module>spring-test-security</module>
+		<module>spring-test-hibernate1</module>
+		<module>spring-mvc</module>
 	</modules>
 	
      <build>

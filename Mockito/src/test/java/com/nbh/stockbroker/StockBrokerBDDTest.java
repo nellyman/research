@@ -8,8 +8,6 @@
  */
 package com.nbh.stockbroker;
 
-import java.math.BigDecimal;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,16 +17,17 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.math.BigDecimal;
+
 /**
- *
- * @author  nhardwic
+ * @author nhardwic
  */
 
 @RunWith(MockitoJUnitRunner.class)
 public class StockBrokerBDDTest {
 
     @Mock
-    Market  marketWatcher;
+    Market marketWatcher;
 
     @Mock
     Portfolio portfolio;
@@ -39,8 +38,9 @@ public class StockBrokerBDDTest {
     public void setUp() {
         this.broker = new StockBroker(this.marketWatcher);
     }
+
     @Test
-    public void  should_sell_a_stock_when_price_increases_by_ten_percent(){
+    public void should_sell_a_stock_when_price_increases_by_ten_percent() {
 
         final Stock aCorp = new MaterialisedStock(new BigDecimal(11.20), "FB", "FaceBook");
 
@@ -52,6 +52,6 @@ public class StockBrokerBDDTest {
         //when the 'FB' stock price becomes $11.00
         this.broker.perform(this.portfolio, aCorp);
         //then the 'FB' stocks are sold
-        Mockito.verify(this.portfolio).sell(aCorp,10);
+        Mockito.verify(this.portfolio).sell(aCorp, 10);
     }
 }

@@ -9,15 +9,15 @@
 package com.nbh.theories;
 
 /**
- *
- * @author  nhardwic
+ * @author nhardwic
  */
 
 public class Adder {
     public Object add(final Number a, final Number b) {
-        return a.doubleValue()+b.doubleValue();
+        return a.doubleValue() + b.doubleValue();
     }
+
     public Object add(final String a, final String b) {
-        return a+b;
+        return a + b;
     }
 }

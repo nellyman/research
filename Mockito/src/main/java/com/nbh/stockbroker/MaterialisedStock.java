@@ -11,14 +11,13 @@ package com.nbh.stockbroker;
 import java.math.BigDecimal;
 
 /**
- *
- * @author  nhardwic
+ * @author nhardwic
  */
 public class MaterialisedStock implements Stock {
 
-    private BigDecimal price;
     private final String symbol;
     private final String name;
+    private BigDecimal price;
 
     /**
      * @param price

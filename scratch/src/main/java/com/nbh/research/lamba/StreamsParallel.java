@@ -5,9 +5,10 @@
 
 package com.nbh.research.lamba;
 
+import org.junit.Test;
+
 import java.util.stream.IntStream;
 
-import org.junit.Test;
 
 
 

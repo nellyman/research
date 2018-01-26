@@ -2,7 +2,6 @@ package com.nbh.lucene;
 
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -47,7 +46,9 @@ public class Search {
 
         Document doc = new Document();
         String text = "Lucene is an Information Retrieval library written in Java.";
-        doc.add(new TextField(FIELDNAME, text, Field.Store.YES));
+        TextField field = new TextField(FIELDNAME, text, Field.Store.YES);
+        field.setBoost(2.0f);
+        doc.add(field);
         indexWriter.addDocument(doc);
 
         Document doc1 = new Document();

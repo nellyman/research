@@ -9,12 +9,12 @@
 package com.nbh.theories;
 
 /**
- *
- * @author  nhardwic
+ * @author nhardwic
  */
 public class AddTwoNumbers {
 
     public Integer addNumbers(final Integer first, final Integer second) {
-        return first.intValue()+second.intValue();
+
+        return first.intValue() + second.intValue();
     }
 }
