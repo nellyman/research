@@ -35,8 +35,8 @@ public class SortText extends javax.swing.JPanel {
                 
                 String[] words = readText(ta.getText());
                 
-                // words = com.nbh.tutorials.compare.UtilCompare.normalCompare(words);
-                words = com.nbh.tutorials.compare.UtilCompare.comparitorCompare(words);
+                // words = com.nbh.core.compare.UtilCompare.normalCompare(words);
+                words = com.nbh.core.compare.UtilCompare.comparitorCompare(words);
                 ta.setText(reformText(words));
             }
         });

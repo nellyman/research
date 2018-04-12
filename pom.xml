@@ -27,6 +27,8 @@
 		<module>spring-test-security</module>
 		<module>spring-test-hibernate1</module>
 		<module>spring-mvc</module>
+		<module>reactive</module>
+		<module>weatherForecast</module>
 	</modules>
 	
      <build>
