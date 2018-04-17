@@ -15,18 +15,19 @@
 	<modules>
 		<!-- Rename, add or remove the modules list below as required -->
 		<!-- <module>db-migrations</module> -->
+		<module>hibernate-search</module>
 		<module>scratch</module>
 		<module>Mockito</module>
 		<module>Selenium</module>
-		<module>no-webxml</module>
-		<module>javaversioneight</module>
-		<module>testing</module>
-		<module>pattern</module>
+		<module>spring-test-hibernate2</module>
+		<module>spring-test-hibernate3</module>
 		<module>spring_testing</module>
 		<module>spring-rest-testing</module>
 		<module>spring-test-security</module>
-		<module>spring-test-hibernate1</module>
+		<module>reactive-spring</module>
 		<module>spring-mvc</module>
+		<module>mvc-test3</module>
+		<module>spring-mvc2</module>
 		<module>reactive</module>
 		<module>weatherForecast</module>
 	</modules>
