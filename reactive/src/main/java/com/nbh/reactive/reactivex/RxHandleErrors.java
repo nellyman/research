@@ -1,4 +1,4 @@
-package com.nbh.reactive.rx;
+package com.nbh.reactive.reactivex;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;

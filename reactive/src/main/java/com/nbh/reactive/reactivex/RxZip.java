@@ -1,4 +1,4 @@
-package com.nbh.reactive.rx;
+package com.nbh.reactive.reactivex;
 
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
@@ -19,7 +19,6 @@ public class RxZip {
         Flowable<String> intervals = Flowable
                 .interval(250, TimeUnit.MILLISECONDS,
                         Schedulers.computation())
-                .limit(10)
                 .map(tick -> "Tick #" + tick)
                 .subscribeOn(Schedulers.computation());
 
@@ -29,7 +28,6 @@ public class RxZip {
 
         Flowable<Object> uuids = Flowable
                 .generate(emitter -> emitter.onNext(UUID.randomUUID()))
-                .limit(10)
                 .subscribeOn(Schedulers.computation());
 
         logger.info(" Zip ====================================");
