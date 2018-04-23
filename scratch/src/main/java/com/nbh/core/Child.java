@@ -10,7 +10,7 @@ package com.nbh.core;
  *
  * @author  neal and rachel
  */
-public class Child extends com.nbh.tutorials.Parent {
+public class Child extends Parent {
     
     public String name2="cHello";
     public String name3="child hello";

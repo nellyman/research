@@ -18,10 +18,10 @@ public class ClassCast {
         System.out.println(str2);
 
         Vehicle car = new Car();
-        System.out.println(car.size); // it's 10, even though a car was created. The assigned type is the actual type
+        System.out.println(car.getNumberOfWheels()); // it's 10, even though a car was created. The assigned type is the actual type
 
         Car car2 = (Car) car;
-        System.out.println("car2.size = " + car2.size); // but casting to a car gives the car value.
+        System.out.println("car2.size = " + car2.getNumberOfWheels()); // but casting to a car gives the car value.
 
         //Bike bike1 = (Bike)car; // casting to a bike fails at runtime..
         //System.out.println("bike1.size = " + bike1.size);
@@ -42,25 +42,13 @@ public class ClassCast {
         z.doSomething();
     }
 }
-    class Vehicle {
-    static{
-        System.out.println("Vehicle static"); // inits the static variables
-    }
-        {
-            System.out.println("Vehicle Initialization Block"); // inits the instance variables
-        }
-
-        Vehicle(){
-            System.out.println("Vehicle Constructor"); // constructor
-        }
-        int size=10;
-    }
-
-    class Car extends Vehicle {
-        int size=5;
-    }
 
     class Bike extends Vehicle {
+        @Override
+        public int getNumberOfWheels() {
+            return 2;
+        }
+
         int size=1;
     }
 

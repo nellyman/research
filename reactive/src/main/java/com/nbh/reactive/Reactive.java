@@ -1,6 +1,5 @@
 package com.nbh.reactive;
 
-public class reactive {
-
+public class Reactive {
 
 }

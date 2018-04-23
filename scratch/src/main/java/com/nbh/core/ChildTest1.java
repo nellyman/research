@@ -10,7 +10,7 @@ package com.nbh.core;
  *
  * @author  neal and rachel
  */
-public class ChildTest1 extends com.nbh.tutorials.Parent {
+public class ChildTest1 extends Parent {
     
     public int x=99;
     /** Creates a new instance of ChildTest1 */

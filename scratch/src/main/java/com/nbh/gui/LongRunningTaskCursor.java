@@ -4,7 +4,9 @@ package com.nbh.gui;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import com.nbh.tutorials.thread.LongProcess;
+
+import com.nbh.core.thread.LongProcess;
+
 /**
 *   Class TestCursor
 */
@@ -29,7 +31,7 @@ public class LongRunningTaskCursor extends JPanel
         }
         public void mouseClicked(MouseEvent event){         
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));            
-            t = new Thread(new LongProcess(10000));            
+            t = new Thread(new LongProcess(10000));
             t.start();
             setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }

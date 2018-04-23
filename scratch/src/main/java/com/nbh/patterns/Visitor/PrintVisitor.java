@@ -2,7 +2,7 @@ package com.nbh.patterns.Visitor;
 
 import java.util.*;
 
-public class PrintVisitor implements com.nbh.patterns.Visitor.Visitor{
+public class PrintVisitor implements Visitor{
     
     public void visitCollection(Collection collection) {
         Iterator iterator = collection.iterator();

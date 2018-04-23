@@ -1,6 +1,5 @@
 package com.nbh.core.thread;
-import com.nbh.tutorials.thread.CheckCollections;
-import com.nbh.tutorials.thread.AcceptCollection;
+
 
 public class Minister{
 
