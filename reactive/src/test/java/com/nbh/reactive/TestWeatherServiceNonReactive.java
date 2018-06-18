@@ -13,6 +13,7 @@ import com.nbh.forecast.service.impl.SlowTemperatureService;
 import com.nbh.forecast.weather.TemperatureUnit;
 import org.junit.Test;
 
+
 import java.time.Duration;
 import java.time.Instant;
 
